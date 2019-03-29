@@ -25,3 +25,78 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// % ./gradlew -q hello
+// ↑で実行
+//task hello {
+//    doLast {
+//        println 'Hello world!poipoi'
+//    }
+//}
+//ショートカット
+task hello << {
+    println 'Hello world!'
+}
+
+//基本型
+task hoge << {
+    String fuga = 'fuga'
+    int count = 9
+    println 'hoge' + fuga + 'piyo'
+    println count.toString()
+}
+
+//繰り返し
+task count << {
+    10.times {
+        println it
+    }
+}
+
+// 依存関係の記述 (順番変えると動かない)
+//task unlockDoor << {
+//    println "I unlock the door"
+//}
+//task enterMyRoom(dependsOn: unlockDoor) << {
+//    println "I'm home"
+//}
+//task relax(dependsOn: enterMyRoom) << {
+//    println "Relax..."
+//}
+
+// 依存関係の記述 (呼び出しを文字列にすると遅延評価されるようになる)
+//task enterMyRoom(dependsOn: 'unlockDoor') << {
+//    println "I'm home"
+//}
+//task unlockDoor << {
+//    println "I unlock the door"
+//}
+
+//task 定義とは別に依存関係を記述することもできる
+task unlockDoor << {
+    println "I unlock the door"
+}
+task enterMyRoom << {
+    println "I'm home"
+}
+task relax << {
+    println "Relax..."
+}
+
+enterMyRoom.dependsOn unlockDoor
+relax.dependsOn unlockDoor, enterMyRoom
+
+// task の前後に処理を差し込む
+task sample << {
+    println 'hoge'
+}
+sample.doFirst {
+    println 'hello!'
+}
+sample.doLast {
+    println 'fuga'
+}
+sample << {
+    println 'piyo'
+}
+
